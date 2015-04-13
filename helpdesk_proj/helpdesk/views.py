@@ -1,5 +1,4 @@
 from django.http import HttpResponse, HttpResponseRedirect
-#from django.views.generic.edit import UpdateView, FormView, CreateView
 from django.views.generic.edit import FormView, UpdateView, CreateView
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
@@ -11,12 +10,20 @@ from . import models
 from .util import unnamed_user
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
+from django.conf import settings
 User = get_user_model()
 
 
 class Home(FormView):
     template_name = 'helpdesk/index.html'
     form_class = forms.LoginForm
+
+    def get_context_data(self, **kwargs):
+        host = self.request.META['HTTP_HOST']
+        # Choose the first different domain
+        other_domain = [x for x in settings.ALTERNATIVE_DOMAINS
+                        if x != host][0]
+        return {'other_domain': other_domain}
 
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_authenticated():

@@ -96,6 +96,11 @@ REST_FRAMEWORK = {
     ),
 }
 
+ALTERNATIVE_DOMAINS = [
+    'http://try.snorkyproject.org/',
+    'http://try2.snorkyproject.org/',
+]
+
 LOGGING = {
     'version': 1,
     'handlers': {
