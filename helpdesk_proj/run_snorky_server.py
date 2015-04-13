@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
     # Create a WebSocket frontend
     app_frontend = Application([
-        SnorkyWebSocketHandler.get_route(frontend, "/ws"),
+        SnorkyWebSocketHandler.get_route(frontend, "/websocket"),
     ])
     app_frontend.listen(5001)
 
