@@ -19,11 +19,15 @@ class Home(FormView):
     form_class = forms.LoginForm
 
     def get_context_data(self, **kwargs):
+        ctx = super(Home, self).get_context_data(**kwargs)
+
         host = self.request.META['HTTP_HOST']
         # Choose the first different domain
-        other_domain = [x for x in settings.ALTERNATIVE_DOMAINS
-                        if x != host][0]
-        return {'other_domain': other_domain}
+        ctx['other_domain']= [
+            x for x in settings.ALTERNATIVE_DOMAINS
+            if x != host
+        ][0]
+        return ctx
 
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_authenticated():
