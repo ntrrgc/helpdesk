@@ -2,17 +2,17 @@ from . import models, serializers, permissions
 from rest_framework import mixins, viewsets, generics
 from rest_framework import status
 from rest_framework.response import Response
-import miau.backend.django.rest_framework as miau
+import snorky.backend.django.rest_framework as snorky
 
 
-class ListIssuesView(miau.ListSubscribeAPIView):
+class ListIssuesView(snorky.ListSubscribeAPIView):
     serializer_class = serializers.IssueSerializer
     permission_classes = [permissions.ManipulateIssuesPermission]
     model = models.Issue
     dealer_name = 'AllIssues'
 
 
-class MyIssuesView(miau.ListSubscribeAPIView):
+class MyIssuesView(snorky.ListSubscribeAPIView):
     serializer_class = serializers.IssueSerializer
     dealer_name = 'IssuesByUser'
     model = models.Issue
@@ -24,7 +24,7 @@ class MyIssuesView(miau.ListSubscribeAPIView):
         return models.Issue.objects.filter(initiator=self.request.user)
 
 
-class RetrieveIssueView(miau.SubscribeModelMixin,
+class RetrieveIssueView(snorky.SubscribeModelMixin,
                         generics.RetrieveAPIView):
     serializer_class = serializers.IssueWithRepliesSerializer
     model = models.Issue
@@ -37,7 +37,7 @@ class RetrieveIssueView(miau.SubscribeModelMixin,
                 { 'dealer_name': 'IssueReplies',
                   'model_key': issue_id }]
 
-    @miau.subscription_in_response
+    @snorky.subscription_in_response
     def retrieve(self, *args, **kwargs):
         return super(RetrieveIssueView, self).retrieve(*args, **kwargs)
 

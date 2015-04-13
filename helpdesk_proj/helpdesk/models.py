@@ -2,11 +2,11 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
-from miau.backend.django import subscriptable
+from snorky.backend.django import subscribable
 User = get_user_model()
 
 
-@subscriptable
+@subscribable
 class Issue(models.Model):
     initiator = models.ForeignKey(User, related_name='reported_issues')
     title = models.CharField(max_length=150)
@@ -28,7 +28,7 @@ class Issue(models.Model):
         )
 
 
-@subscriptable
+@subscribable
 class IssueReply(models.Model):
     author = models.ForeignKey(User, related_name='issue_replies')
     issue = models.ForeignKey('Issue', related_name='replies')
