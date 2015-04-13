@@ -1,0 +1,17 @@
+{% extends "helpdesk/base.html" %}
+{% load browserid %}
+{% block extrahead %}
+  {% browserid_css %}
+{% endblock %}
+{% block title %}Welcome{% endblock %}
+{% block header_title %}Welcome{% endblock %}
+{% block content %}
+  {% browserid_info %}
+  <p>You need to login in order to create issues.</p>
+  {% if user.is_authenticated %}
+    {% browserid_logout text='Logout' %}
+  {% else %}
+    {% browserid_login text='Login with email' color='dark' %}
+  {% endif %}
+  {% browserid_js %}
+{% endblock %}

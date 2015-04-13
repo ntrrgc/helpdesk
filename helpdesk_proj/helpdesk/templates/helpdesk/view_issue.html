@@ -1,0 +1,55 @@
+{% extends "helpdesk/base.html" %}
+{% load staticfiles %}
+{% block title %}{{ issue.title }}{% endblock %}
+{% block header_title %}{{ issue.title }}{% endblock %}
+{% block extrahead %}
+<script>
+var issueId = {{ issue.id }};
+</script>
+{% endblock %}
+{% block ngapp %}ng-app="helpdesk"{% endblock %}
+{% block content_tags %}ng-controller="IssueCtrl"{% endblock %}
+{% block view_name %}issue{% endblock %}
+{% block content %}
+{% include "helpdesk/notifications_banner.html" %}{% verbatim %}
+<div class="message">
+  <div>Title: {{ issue.title}}</div>
+  <div>From: {{ issue.initiator.first_name }} {{ issue.initiator.last_name }}
+    <em>&lt;{{issue.initiator.email}}&gt;</em></div>
+  <div>Date: {{ issue.date | amDateFormat: 'MMMM DD, YYYY, h:mm a' }}</div>
+  <div class="message_content">{{ issue.content }}</div>
+</div>
+<div>
+  <div class="message reply" ng-repeat="reply in replies">
+    <div>From: {{ reply.author.first_name }} {{ reply.author.last_name }}
+      <em>&lt;{{ reply.author.email }}&gt;</em></div>
+    <div>Date: {{ reply.date | amDateFormat: 'MMMM DD, YYYY, h:mm a' }}</div>
+    <div class="message_content">{{ reply.content }}</div>
+    <div class="message_action" ng-if="reply.action == 'close'">
+      Issue marked as solved.
+    </div>
+    <div class="message_action" ng-if="reply.action == 'reopen'">
+      Issue reopened.
+    </div>
+  </div>
+</div>
+<form ng-submit="send()">{% endverbatim %}{% csrf_token %}{% verbatim %}
+  <h3>Reply</h3>
+  <table>
+    <tr>
+      <th><label for="id_action">Status:</label></th>
+      <td><select id="id_action" ng-disabled="sending" ng-model="replyForm.action">
+        <option value="none">{{ issue.solved ? 'Keep solved' : 'Keep unsolved' }}</option>
+        <option value="close" ng-if="!issue.solved">Mark as solved</option>
+        <option value="reopen" ng-if="issue.solved">Reopen issue</option>
+      </select></td>
+    </tr><tr>
+      <th><label for="id_content">Content:</label></th>
+      <td><textarea ng-disabled="sending" cols="40" id="id_content" 
+          ng-model="replyForm.content" rows="10">
+      </textarea></td>
+    </tr>
+  </table>
+  <input ng-disabled="sending" type="submit" value="Send">
+</form>
+{% endverbatim %}{% endblock %}

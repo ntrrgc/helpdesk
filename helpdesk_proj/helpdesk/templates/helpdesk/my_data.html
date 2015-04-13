@@ -1,0 +1,9 @@
+{% extends "helpdesk/base.html" %}
+{% block title %}My data{% endblock %}
+{% block header_title %}My data{% endblock %}
+{% block content %}
+<form action="" method="POST">{% csrf_token %}
+  <table>{{ form }}</table>
+  <button type="submit">Update my data</button>
+</form>
+{% endblock %}

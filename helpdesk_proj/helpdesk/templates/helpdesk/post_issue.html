@@ -1,0 +1,9 @@
+{% extends "helpdesk/base.html" %}
+{% block title %}Post issue{% endblock %}
+{% block header_title %}Post issue{% endblock %}
+{% block content %}
+<form action="" method="POST">{% csrf_token %}
+  <table>{{ form }}</table>
+  <button type="submit">Post issue</button>
+</form>
+{% endblock %}

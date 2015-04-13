@@ -1,0 +1,30 @@
+{% extends "helpdesk/base.html" %}
+{% load staticfiles %}
+{% block title %}All issues{% endblock %}
+{% block header_title %}All issues{% endblock %}
+{% block ngapp %}ng-app="helpdesk"{% endblock %}
+{% block content_tags %}ng-controller="AllIssuesCtrl"{% endblock %}
+{% block view_name %}allIssues{% endblock %}
+{% block content %}
+{% include "helpdesk/notifications_banner.html" %}{% verbatim %}
+
+<div class="no_issues" ng-show="issues.length == 0">
+  There are no issues reported yet.
+</div>
+
+<table ng-show="issues.length > 0">
+  <tr>
+    <th>Attention</th>
+    <th style="width: 140px">Creation time</th>
+    <th>Initiator</th>
+    <th>Title</th>
+  </tr>
+  <tr ng-repeat="issue in issues | orderBy:['-needs_attention','-date']"
+    ng-class="{attention: issue.needs_attention}">
+    <td>{{ formatAttention(issue.needs_attention) }}</td>
+    <td><span am-time-ago="issue.date"></span></td>
+    <td>{{ issue.initiator.first_name }} {{ issue.initiator.last_name }}</td>
+    <td><a target="_blank" ng-href="/issues/{{issue.id}}/">{{ issue.title }}</a></td>
+  </tr>
+</table>
+{% endverbatim %}{% endblock %}

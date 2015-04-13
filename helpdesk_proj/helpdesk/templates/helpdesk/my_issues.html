@@ -1,0 +1,30 @@
+{% extends "helpdesk/base.html" %}
+{% load staticfiles %}
+{% block title %}My issues{% endblock %}
+{% block header_title %}My issues{% endblock %}
+{% block ngapp %}ng-app="helpdesk"{% endblock %}
+{% block content_tags %}ng-controller="MyIssuesCtrl"{% endblock %}
+{% block view_name %}myIssues{% endblock %}
+{% block content %}
+<div class="no_issues" ng-show="issues.length == 0">
+  You don't have issues yet!
+</div>
+
+<div class="div_new_issue">
+  <a href="{% url 'post_issue' %}">Create a new issue</a>
+</div>
+
+<table ng-show="issues.length > 0">{% verbatim %}
+  <tr>
+    <th>Status</th>
+    <th style="width: 140px">Creation time</th>
+    <th>Title</th>
+  </tr>
+  <tr ng-class="{attention: !issue.solved}"
+    ng-repeat="issue in issues | orderBy:['solved', '-date']">
+    <td>{{ issue.solved ? "Solved" : "Unsolved" }}</td>
+    <td><span am-time-ago="issue.date"></span></td>
+    <td><a ng-href="/issues/{{issue.id}}/">{{ issue.title }}</a></td>
+  </tr>
+</table>
+{% endverbatim %}{% endblock %}

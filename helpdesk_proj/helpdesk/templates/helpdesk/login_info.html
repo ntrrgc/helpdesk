@@ -1,0 +1,8 @@
+{% load browserid %}
+{% if user.is_authenticated %}
+<div id="login_info">
+  You are logged as <a href="{% url 'my_data' %}">{{ user.get_full_name }}</a>
+  <em>&lt;{{ user.email }}&gt;</em>.
+  {% browserid_logout text='Logout' %}
+</div>
+{% endif %}
