@@ -25,12 +25,17 @@ class Home(FormView):
             return self.redirect_logged()
 
     def form_valid(self, form):
-        if form.cleaned_data['email']:
-            email = form.cleaned_data['email']
-        else:
+        if form.cleaned_data['admin']:
             email = 'admin@snorkyproject.org'
-        user, ok = User.objects.get_or_create(
-            username=email, email=email)
+            user, _ = User.objects.get_or_create(
+                username=email,
+                email=email,
+                is_staff=True,
+                is_superuser=True)
+        else:
+            email = form.cleaned_data['email']
+            user, _ = User.objects.get_or_create(
+                username=email, email=email)
         user = authenticate(username=user.username)
 
         login(self.request, user)
