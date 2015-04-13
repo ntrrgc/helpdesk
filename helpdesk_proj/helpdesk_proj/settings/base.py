@@ -17,7 +17,6 @@ ALLOWED_HOSTS = []
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'django_browserid.auth.BrowserIDBackend',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -28,7 +27,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
-    'django_browserid.context_processors.browserid',
 )
 
 #SITE_URL = 'http://helpdesk.rufian.eu/'
@@ -38,7 +36,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
-    'django_browserid',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -104,11 +101,5 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler'
         },
-    },
-    'loggers': {
-        'django_browserid': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-        }
     },
  }

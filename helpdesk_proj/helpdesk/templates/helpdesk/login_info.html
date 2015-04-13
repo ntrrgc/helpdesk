@@ -1,8 +1,9 @@
-{% load browserid %}
 {% if user.is_authenticated %}
 <div id="login_info">
   You are logged as <a href="{% url 'my_data' %}">{{ user.get_full_name }}</a>
   <em>&lt;{{ user.email }}&gt;</em>.
-  {% browserid_logout text='Logout' %}
+  <form action="/logout" method="POST">
+    <button type="submit">Logout</button>
+  </form>
 </div>
 {% endif %}

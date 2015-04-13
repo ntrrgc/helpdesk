@@ -22,7 +22,7 @@ router.register("issues", IssuesViewSet, base_name="issue")
 router.register("my-issues", MyIssuesViewSet, base_name="my-issues")
 
 urlpatterns = patterns('',
-    url(r'^$', views.Home.as_view(), name='browserid_login'),
+    url(r'^$', views.Home.as_view(), name='login'),
     url(r'^issues/new/$', views.PostIssue.as_view(), name='post_issue'),
     url(r'^issues/(?P<pk>\d+)/$', views.ViewIssue.as_view(),
         name='view_issue'),
