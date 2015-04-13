@@ -97,8 +97,8 @@ REST_FRAMEWORK = {
 }
 
 ALTERNATIVE_DOMAINS = [
-    'http://try.snorkyproject.org/',
-    'http://try2.snorkyproject.org/',
+    'try.snorkyproject.org',
+    'try2.snorkyproject.org',
 ]
 
 LOGGING = {

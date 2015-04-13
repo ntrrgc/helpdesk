@@ -23,7 +23,7 @@ class Home(FormView):
 
         host = self.request.META['HTTP_HOST']
         # Choose the first different domain
-        ctx['other_domain']= [
+        ctx['other_domain']= 'https://%s/' % [
             x for x in settings.ALTERNATIVE_DOMAINS
             if x != host
         ][0]
