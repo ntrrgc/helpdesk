@@ -81,9 +81,9 @@ BROWSERID_CREATE_USER = 'helpdesk.util.create_user'
 
 STATIC_URL = '/static/'
 
-MIAU_SECRET_KEY = 'JkdXZCQgsCIpFAA7GsPY'
+SNORKY_API_KEY = open('snorky-key', 'r').read()
 
-MIAU_JSON_ENCODER = 'rest_framework.utils.encoders.JSONEncoder'
+SNORKY_DATASYNC_SERVICE = 'datasync_backend'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

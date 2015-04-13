@@ -26,10 +26,10 @@ STATIC_ROOT = '/srv/www/static.rufian.eu/'
 
 STATIC_URL = '//static.rufian.eu/'
 
-MIAU_URL_BASE = 'http://localhost:5001/' #backend
 
-MIAU_URL_BASE_FRONTEND = 'wss://helpdesk.rufian.eu/miau/'
-#MIAU_URL_BASE_FRONTEND = 'ws://helpdesk.rufian.eu:5002/'
+SNORKY_BACKEND_URL = 'http://localhost:5002/backend'
+
+SNORKY_FRONTEND_URL = 'ws://localhost:5001/websocket'
 
 SECRET_FILE = os.path.join(os.path.dirname(__file__), 'secret.key')
 
@@ -45,40 +45,40 @@ except IOError:
         f.write(SECRET_KEY)
     del chars
 
-LOGGING = { 
+LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s',
-        },  
-    },  
+        },
+    },
     'filters': {
-    },  
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
             'stream': 'ext://sys.stdout'
-        },  
+        },
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': os.path.expanduser('~/error.log'),
             'maxBytes': 1024**2,
             'backupCount': 3,
-        },  
+        },
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
-        },  
-    },  
+        },
+    },
     'loggers': {
         'django.request': {
             'handlers': ['console', 'file', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
-        },  
-    }   
+        },
+    }
 }
 

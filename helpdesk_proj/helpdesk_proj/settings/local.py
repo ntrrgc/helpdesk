@@ -4,11 +4,11 @@ DEBUG = True
 
 TEMPLATE_DEBUG = False
 
-SECRET_KEY = 'o15nwy&6g^-+0s)vusb&!(#4s7!v!=p+y*35yy@bi_ax9hjs6y'
+SECRET_KEY = 'dummy key'
 
-MIAU_URL_BASE = 'http://localhost:5001/'
+SNORKY_BACKEND_URL = 'http://localhost:5002/backend'
 
-MIAU_URL_BASE_FRONTEND = 'ws://localhost:5002/'
+SNORKY_FRONTEND_URL = 'ws://localhost:5001/websocket'
 
 DATABASES = {
     'default': {

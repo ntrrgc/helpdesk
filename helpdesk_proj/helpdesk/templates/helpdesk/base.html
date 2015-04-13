@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="{% static "helpdesk/css/style.css" %}" />
   <script>
     var apiBaseUrl = "{% url 'api-root' %}";
-    var miauUrl = "{% value_from_settings MIAU_URL_BASE_FRONTEND %}";
+    var snorkyUrl = "{% value_from_settings SNORKY_FRONTEND_URL %}";
     var csrfToken = "{{ csrf_token }}";
     var userEmail = "{{ user.email }}";
     var viewName = "{% block view_name %}{% endblock %}";
