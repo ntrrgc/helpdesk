@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 #from django.views.generic.edit import UpdateView, FormView, CreateView
 from django.views.generic.edit import FormView, UpdateView, CreateView
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, get_object_or_404
@@ -10,7 +10,7 @@ from . import forms
 from . import models
 from .util import unnamed_user
 from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 User = get_user_model()
 
 
@@ -45,6 +45,12 @@ class Home(FormView):
         else:
             return redirect('my_issues')
 
+
+@login_required
+class LogOut(View):
+    def post(self, request):
+        logout(request)
+        return HttpResponseRedirect('/')
 
 @login_required
 class MyData(UpdateView):

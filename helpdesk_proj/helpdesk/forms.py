@@ -18,4 +18,4 @@ class ReplyIssueForm(ModelForm):
 
 class LoginForm(Form):
     email = EmailField(label="Email", required=False)
-    admin = BooleanField(initial=False, widget=HiddenInput)
+    admin = BooleanField(widget=HiddenInput, required=False)

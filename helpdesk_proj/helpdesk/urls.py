@@ -23,6 +23,7 @@ router.register("my-issues", MyIssuesViewSet, base_name="my-issues")
 
 urlpatterns = patterns('',
     url(r'^$', views.Home.as_view(), name='login'),
+    url(r'^logout/$', views.LogOut.as_view(), name='logout'),
     url(r'^issues/new/$', views.PostIssue.as_view(), name='post_issue'),
     url(r'^issues/(?P<pk>\d+)/$', views.ViewIssue.as_view(),
         name='view_issue'),
