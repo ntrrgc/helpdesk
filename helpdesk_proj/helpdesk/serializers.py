@@ -14,13 +14,14 @@ class IssueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Issue
-        fields = ('id', 'initiator', 'title', 'solved', 'content',
+        fields = ('id', 'initiator', 'title', 'solved', 'content', 'date',
                   'needs_attention')
 
 
 class IssueReplySerializer(serializers.ModelSerializer):
     author = UserSerializer()
     issue_id = serializers.IntegerField(source='issue.id')
+    date = serializers.DateTimeField()
 
     class Meta:
         model = models.IssueReply
