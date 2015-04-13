@@ -7,7 +7,7 @@ from django.shortcuts import redirect, get_object_or_404
 from .patch_view_decorator import login_required, permission_required
 from . import forms
 from . import models
-from .util import unnamed_user
+from .util import unnamed_user, create_user
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
 from django.conf import settings
@@ -45,8 +45,7 @@ class Home(FormView):
                 is_superuser=True)
         else:
             email = form.cleaned_data['email']
-            user, _ = User.objects.get_or_create(
-                username=email, email=email)
+            user = create_user(email)
         user = authenticate(username=user.username)
 
         login(self.request, user)
