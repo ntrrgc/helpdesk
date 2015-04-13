@@ -32,10 +32,10 @@ class RetrieveIssueView(snorky.SubscribeModelMixin,
 
     def get_subscription_items(self):
         issue_id = int(self.kwargs['pk'])
-        return [{ 'dealer_name': 'Issue',
-                  'model_key': issue_id },
-                { 'dealer_name': 'IssueReplies',
-                  'model_key': issue_id }]
+        return [{ 'dealer': 'Issue',
+                  'query': issue_id },
+                { 'dealer': 'IssueReplies',
+                  'query': issue_id }]
 
     @snorky.subscription_in_response
     def retrieve(self, *args, **kwargs):
