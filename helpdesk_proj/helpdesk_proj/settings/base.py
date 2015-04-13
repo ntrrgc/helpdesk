@@ -85,6 +85,8 @@ SNORKY_API_KEY = open('snorky-key', 'r').read()
 
 SNORKY_DATASYNC_SERVICE = 'datasync_backend'
 
+SNORKY_JSON_ENCODER = 'rest_framework.utils.encoders.JSONEncoder'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
