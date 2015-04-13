@@ -9,15 +9,15 @@ class ListIssuesView(snorky.ListSubscribeAPIView):
     serializer_class = serializers.IssueSerializer
     permission_classes = [permissions.ManipulateIssuesPermission]
     model = models.Issue
-    dealer_name = 'AllIssues'
+    dealer = 'AllIssues'
 
 
 class MyIssuesView(snorky.ListSubscribeAPIView):
     serializer_class = serializers.IssueSerializer
-    dealer_name = 'IssuesByUser'
+    dealer = 'IssuesByUser'
     model = models.Issue
 
-    def get_model_key(self):
+    def get_dealer_query(self):
         return self.request.user.email
 
     def get_queryset(self):
