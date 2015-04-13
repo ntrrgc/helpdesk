@@ -10,10 +10,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 class IssueSerializer(serializers.ModelSerializer):
     initiator = UserSerializer()
+    date = serializers.DateTimeField()
 
     class Meta:
         model = models.Issue
-        fields = ('id', 'initiator', 'title', 'date', 'solved', 'content',
+        fields = ('id', 'initiator', 'title', 'solved', 'content',
                   'needs_attention')
 
 
