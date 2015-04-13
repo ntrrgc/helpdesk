@@ -46,6 +46,28 @@ class IssueReplies(SimpleDealer):
 #-----------------------------------------------------------------------------#
 # Server startup                                                              #
 #-----------------------------------------------------------------------------#
+def gen_password():
+    import random
+    safe_random = random.SystemRandom()
+    return "".join([
+        safe_random.choice("abcdefghijklmnopqrstuvwxyz1234567890")
+        for i in range(32)
+    ])
+
+def read_api_key():
+    import errno
+    try:
+        with open('snorky-key', 'r') as f:
+            password = f.read().strip()
+    except IOError as error:
+        if error.errno == errno.ENOENT:
+            password = gen_password()
+            with open('snorky-key', 'w') as f:
+                f.write(password)
+        else:
+            raise error
+    return password
+
 if __name__ == "__main__":
     # Create two services
     datasync = DataSyncService("datasync", [
@@ -69,7 +91,7 @@ if __name__ == "__main__":
     app_backend = Application([
         ("/backend", BackendHTTPHandler, {
             "service_registry": backend,
-            "api_key": "swordfish"
+            "api_key": read_api_key(),
         })
     ])
     app_backend.listen(5002)
