@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect
 #from django.views.generic.edit import UpdateView, FormView, CreateView
-from django.views.generic.edit import *
+from django.views.generic.edit import FormView, UpdateView, CreateView
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.core.urlresolvers import reverse
@@ -10,17 +10,31 @@ from . import forms
 from . import models
 from .util import unnamed_user
 from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login
 User = get_user_model()
 
 
-class Home(TemplateView):
+class Home(FormView):
     template_name = 'helpdesk/index.html'
+    form_class = forms.LoginForm
 
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_authenticated():
             return super(Home, self).get(request, *args, **kwargs)
         else:
             return self.redirect_logged()
+
+    def form_valid(self, form):
+        if form.cleaned_data['email']:
+            email = form.cleaned_data['email']
+        else:
+            email = 'admin@snorkyproject.org'
+        user, ok = User.objects.get_or_create(
+            username=email, email=email)
+        user = authenticate(username=user.username)
+
+        login(self.request, user)
+        return HttpResponseRedirect('/')
 
     def redirect_logged(self):
         if unnamed_user(self.request.user):

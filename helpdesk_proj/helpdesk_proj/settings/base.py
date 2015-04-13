@@ -16,7 +16,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 ALLOWED_HOSTS = []
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
+    'helpdesk.backends.NullAuthBackend',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

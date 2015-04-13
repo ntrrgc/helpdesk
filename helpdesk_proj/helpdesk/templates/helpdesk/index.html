@@ -7,20 +7,21 @@
 {% block content %}
   <p>You need to login in order to create issues.</p>
   <h2>Demo login (client)</h2>
-  <form action="/login" method="POST">
-    <label>
-      Username:
-      <input type="text" name="username">
-    </label>
-    <input type="hidden" name="type" value="client">
+  <form action="" method="POST">
+    {% csrf_token %}
+    <table>
+      {{ form }}
+    </table>
+    <input type="hidden" name="admin" value="False">
     <div>
       <button type="submit">Log in</button>
     </div>
   </form>
 
   <h2>Demo login (admin)</h2>
-  <form action="/login" method="POST">
-    <input type="hidden" name="type" value="admin">
+  <form action="" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="admin" value="True">
     <button type="submit">Log in as admin</button>
   </form>
 {% endblock %}
