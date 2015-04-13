@@ -2,7 +2,7 @@
 
 /* Angular JS configuration */
 
-var app = angular.module('helpdesk', ['restangular', 'angularMoment']);
+var app = angular.module('helpdesk', ['restangular', 'angularMoment', 'Snorky']);
 
 app.config(function($httpProvider, RestangularProvider) {
    RestangularProvider.setBaseUrl(apiBaseUrl);
@@ -17,131 +17,43 @@ app.config(function($httpProvider, RestangularProvider) {
       });
 });
 
-// Delta processor: A class that receives deltas from the connector and
-// processes them. Will be configured later.
-//
-// The class hierarchy is something like this:
-//
-// +------------------+
-// |  <<Interface>>   |  DeltaProcessor is just an interface for an object
-// |  DeltaProcessor  |  which receives deltas and processes them the way it
-// +------------------+  likes.
-// | +onDelta(delta)  |
-// +--------.---------+
-//         /_\
-//          |
-// +--------+-----------------+
-// | CollectionDeltaProcessor |  CollectionDeltaProcessor maintains a set of
-// +--------------------------+  collections identifying each one with a model
-// | +onDelta(delta)          |  class name (as used in delta items) and
-// +-.---------O--------------+  updates them when deltas arrive.
-//  /_\        |
-//   |    0..* | collections : dict<modelClassName, Collection>
-//   |  +------v---------+
-//   |  | <<Interface>>  |  A collection, as needed by ModelDeltaProcessor is
-//   |  |   Collection   |  an object which allows inserting new items and
-//   |  +----------------+  traverse existing items creating an Iterator.
-//   |  | +insert(val)   |    +-----------------+
-//   |  | +getIterator() |--->|  <<Interface>>  | 
-//   |  +-------.--------+    |     Iterator    |  The iterator must allow
-//   |         /_\            +-----------------+  retrieving, updating and
-//   |          |             | +next() : obj   |  deleting items in the
-//   |          |             | +hasNext()      |  collection.
-//   |          |             | +update(newVal) |
-//   |          |             | +delete()       |
-//   |          |             +--------.--------+
-//   |          |                     /_\
-//   |          |                      |
-//   |  +-----------------+   +-----------------+
-//   |  | ArrayCollection |   |  ArrayIterator  |
-//   |  +-----------------+   +-----------------+  ArrayCollection implements
-//   |  | +array          |   | +next() : obj   |  these interfaces for regular 
-//   |  +-----------------+   | +hasNext()      |  Javascript arrays.
-//   |  | +insert(val)    |   | +update(newVal) |
-//   |  | +getIterator()  |-->| +delete()       |
-//   |  +-----------------+   +-----------------+
-//   |                        
-// +----------------------------+  (for AngularJS only)
-// | ngCollectionDeltaProcessor |  ngCollectionDeltaProcessor wraps the call
-// +----------------------------+  to onDelta() of the superclass in an
-// | +scope                     |  AngularJS scope (using $apply).
-// +----------------------------+                                            
-// | +onDelta(delta)            |  This is needed for changes to be shown
-// +----------------------------+  automatically on the screen.
+var snorky;
+var datasync;
+var deltaProcessor;
 
+app.run(function() {
+   // Important: When using Angular-Snorky, all the initialization work
+   // should be done in a .run() block.
+   //
+   // Otherwise Snorky will be already initialized before Angular-Snorky
+   // module hooks event launching and promise classes.
+   snorky = new Snorky(WebSocket, snorkyUrl, {
+      'datasync': Snorky.DataSync
+   }, {debug: true});
+   datasync = snorky.services.datasync;
 
-var deltaProcessor = new ngCollectionDeltaProcessor();
-deltaProcessor.onDelta = function(delta) {
-   // Process delta on superclass
-   ngCollectionDeltaProcessor.prototype.onDelta.call(this, delta);
+   deltaProcessor = new Snorky.DataSync.CollectionDeltaProcessor();
 
-   if (typeof(Notification) === "undefined")
-      return;
+   datasync.deltaReceived.add(function(delta) {
+      deltaProcessor.processDelta(delta);
 
-   if (viewName == "allIssues") {
-      // Alert on new issues
-      for (var i = 0; i < delta.created.length; i++) {
-         var item = delta.created[i];
-         if (item.model_class_name == "Issue") {
-            var issue = item.data;
-
-            var title = "New issue from " + issue.initiator.first_name + " " +
-               issue.initiator.last_name;
-            var body = issue.title;
-
-            new Notification(title, {body: body}).show();
-         }
-      }
-
-      // Alert on existing issues that require attention
-      for (var i = 0; i < delta.updated.length; i++) {
-         var item = delta.updated[i];
-         if (item.model_class_name == "Issue") {
-            if (!item.old_data.needs_attention &&
-                  item.new_data.needs_attention)
-            {
-               var title = "Issue requires attention";
-               var body = item.new_data.title;
-
-               new Notification(title, {body: body}).show();
-            }
-         }
-      }
-   } else if (viewName == "issue") {
-      // Alert on replies, but not to the user that sends them
-      for (var i = 0; i < delta.created.length; i++) {
-         var item = delta.created[i];
-         if (item.model_class_name == "IssueReply" &&
-             item.data.author.email != userEmail) 
-         {
-            var title = deltaProcessor.scope.issue.title;
-            var body = "A new reply has been received";
-
-            new Notification(title, {body: body}).show();
-         }
-      }
-   }
-};
-
-// Miau connector. Receives the URL, the protocol and the delta processor.
-var miau = new MiauConnector(miauUrl, WebSocket, deltaProcessor);
-miau.connect();
+      // Show desktop notifications (if the browser allows them)
+      showNotificationMessage(delta);
+   });
+})
 
 /* Controller (MVC) */
 
 app.controller('AllIssuesCtrl', function($scope, Restangular) {
-   // Sets the scope of the controller in the delta processor (needed by
-   // ngCollectionDeltaProcessor).
-   deltaProcessor.scope = $scope;
-
+   window.scope = $scope
    $scope.formatAttention = function(attention) {
       return (attention ? "Needed" : "");
    };
 
-   // This makes an AJAX call to GET /issues/ with an 'X-Miau' header set to
+   // This makes an AJAX call to GET /issues/ with an 'X-Snorky' header set to
    // Subscribe.
    $scope.issues = [];
-   Restangular.all('issues').getList({}, {'X-Miau': 'Subscribe'})
+   Restangular.all('issues').getList({}, {'X-Snorky': 'Subscribe'})
       .then(function(response) {
          // This function is called when the server replies
 
@@ -150,47 +62,50 @@ app.controller('AllIssuesCtrl', function($scope, Restangular) {
 
          // Tell the CollectionDeltaProcessor to process deltas over the
          // collection
-         deltaProcessor.collections["Issue"] = new ArrayCollection($scope.issues);
+         deltaProcessor.collections["Issue"] =
+           new Snorky.DataSync.ArrayCollection($scope.issues);
 
          // Acquire the subscription with the token received
-         var token = response.headers()['x-miau-token'];
-         miau.acquireSubscription(token);
+         var token = response.headers()['x-subscription-token'];
+         datasync.acquireSubscription({token: token});
       });
 });
 
 app.controller('MyIssuesCtrl', function($scope, Restangular) {
-   deltaProcessor.scope = $scope;
-
    $scope.issues = [];
-   Restangular.all('my-issues').getList({}, {'X-Miau': 'Subscribe'})
+   Restangular.all('my-issues').getList({}, {'X-Snorky': 'Subscribe'})
       .then(function(response) {
          $scope.issues = response.data;
-         deltaProcessor.collections["Issue"] = new ArrayCollection($scope.issues);
-         var token = response.headers()['x-miau-token'];
-         miau.acquireSubscription(token);
+         deltaProcessor.collections["Issue"] =
+             new ArrayCollection($scope.issues);
+         var token = response.headers()['x-subscription-token'];
+         datasync.acquireSubscription({token: token});
       });
 });
 
+var issueScope = null;
 app.controller('IssueCtrl', function($scope, Restangular) {
-   deltaProcessor.scope = $scope;
+   issueScope = $scope;
    $scope.replies = [];
-   Restangular.one('issues', issueId).get({}, {'X-Miau': 'Subscribe'})
+   Restangular.one('issues', issueId).get({}, {'X-Snorky': 'Subscribe'})
       .then(function(response) {
          $scope.issue = response.data;
          $scope.replies = response.data.replies;
 
          // For single item updates
-         deltaProcessor.collections["Issue"] = 
-            new SingleItemCollection($scope.issue, function(newVal) {
+         deltaProcessor.collections["Issue"] =
+            new Snorky.DataSync.SingleItemCollection(function() {
+              return $scope.issue;
+            }, function(newVal) {
                $scope.issue = newVal;
             });
 
          // For collection updates
-         deltaProcessor.collections["IssueReply"] = 
-               new ArrayCollection($scope.replies);
+         deltaProcessor.collections["IssueReply"] =
+               new Snorky.DataSync.ArrayCollection($scope.replies);
 
-         var token = response.headers()['x-miau-token'];
-         miau.acquireSubscription(token);
+         var token = response.headers()['x-subscription-token'];
+         datasync.acquireSubscription({token: token});
       });
 
    $scope.replyForm = {
@@ -216,8 +131,8 @@ app.controller('IssueCtrl', function($scope, Restangular) {
 });
 
 $(function() {
-   if (typeof(Notification) !== "undefined" && 
-      Notification.permission == "default") 
+   if (typeof(Notification) !== "undefined" &&
+      Notification.permission == "default")
    {
       var banner = $("#enable_notifications");
       banner.css("display", "inline-block");
@@ -228,3 +143,44 @@ $(function() {
       });
    }
 });
+
+function showNotificationMessage(delta) {
+   if (typeof(Notification) === "undefined")
+      return;
+
+   if (viewName == "allIssues") {
+      // Alert on new issues
+      if (delta.model == 'Issue' && delta.type == 'insert') {
+         var issue = delta.data;
+
+         var title = "New issue from " + issue.initiator.first_name + " " +
+            issue.initiator.last_name;
+         var body = issue.title;
+
+         new Notification(title, {body: body});
+      }
+
+      // Alert on existing issues that require attention
+      if (delta.model == "Issue" && delta.type == 'update') {
+         if (!delta.oldData.needs_attention &&
+              delta.newData.needs_attention)
+         {
+            var title = "Issue requires attention";
+            var body = delta.newData.title;
+
+            new Notification(title, {body: body});
+         }
+      }
+   } else if (viewName == "issue") {
+      // Alert on replies, but not to the user that sends them
+      if (delta.model == "IssueReply" &&
+          delta.type == 'insert' &&
+          delta.data.author.email != userEmail)
+      {
+         var title = issueScope.issue.title;
+         var body = "A new reply has been received";
+
+         new Notification(title, {body: body});
+      }
+   }
+}
