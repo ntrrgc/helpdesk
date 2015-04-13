@@ -1,12 +1,21 @@
 {% extends "helpdesk/base.html" %}
-<p></p>
+{% load staticfiles %}
 {% block extrahead %}
 {% endblock %}
 {% block title %}Welcome{% endblock %}
 {% block header_title %}Welcome{% endblock %}
 {% block content %}
-  <p>You need to login in order to create issues.</p>
+  <img src="{% static "helpdesk/images/logo.png" %}" alt="">
+  <p>This is a demonstration of how <a href="http://snorkyproject.org/">Snorky</a>, <a href="https://www.djangoproject.com/">Django</a> and <a href="https://angularjs.org/">AngularJS</a> enable developers to easily build real time web applications.</p>
+
+  <p>It shows a simple user assistance tool, where clients can login with their email and open issues. You can also login as an administrator, view the list of issues and reply to them.</p>
+
+  <p>All the views are synchronized to the database with Snorky. You don't need to refresh the page when a new issue is created or replied.</p>
+
+  <p>You can view the source code of this application at GitHub: <a href="https://github.com/ntrrgc/helpdesk">https://github.com/ntrrgc/helpdesk</a></p>
+
   <h2>Demo login (client)</h2>
+  <p>You can use a fake address.</p>
   <form action="" method="POST">
     {% csrf_token %}
     <table>
