@@ -85,7 +85,7 @@ if __name__ == "__main__":
     app_frontend = Application([
         SnorkyWebSocketHandler.get_route(frontend, "/websocket"),
     ])
-    app_frontend.listen(5001)
+    app_frontend.listen(5001, address='localhost')
 
     # Create a backend, set a secret key, port and address
     app_backend = Application([
@@ -94,7 +94,7 @@ if __name__ == "__main__":
             "api_key": read_api_key(),
         })
     ])
-    app_backend.listen(5002)
+    app_backend.listen(5002, address='localhost')
 
     # Start processing
     try:
