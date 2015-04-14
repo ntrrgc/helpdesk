@@ -9,5 +9,5 @@ python-dateutil==2.4.2
 requests==2.2.1
 simplejson==3.3.3
 six==1.5.2
-snorky==0.1.0a2
-tornado==3.2
+tornado<5.0
+streql
