@@ -11,3 +11,4 @@ simplejson==3.3.3
 six==1.5.2
 tornado<5.0
 streql
+snorky==0.1.0a3
