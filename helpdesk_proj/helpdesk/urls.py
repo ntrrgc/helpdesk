@@ -11,10 +11,8 @@ class IssuesViewSet(viewsets.ViewSet):
 
 
 class MyIssuesViewSet(viewsets.ModelViewSet):
-    model = models.Issue
-
-    def get_queryset(self):
-        return models.Issue.objects.filter(initiator=self.request.user)
+    def list(self, request):
+        return api.MyIssuesView.as_view()(request)
 
 
 router = routers.DefaultRouter(trailing_slash=False)
@@ -34,8 +32,6 @@ urlpatterns = patterns('',
     url("^api/", include(router.urls)),
 
     url(r'^api/$', 'django.views.defaults.page_not_found', name='api-root'),
-    url(r'^api/issues$', api.ListIssuesView.as_view()),
-    url(r'^api/my-issues$', api.MyIssuesView.as_view()),
     url(r'^api/issues/(?P<pk>\d+)$', api.RetrieveIssueView.as_view()),
     url(r'^api/replies$', api.ReplyToIssue.as_view()),
 )
