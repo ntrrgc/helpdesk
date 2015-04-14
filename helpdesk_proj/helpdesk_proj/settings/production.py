@@ -7,11 +7,11 @@ TEMPLATE_DEBUG = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, '../db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, './db.sqlite3'),
     }
 }
 
-ALLOWED_HOSTS = ['helpdesk.rufian.eu']
+ALLOWED_HOSTS = ALTERNATIVE_DOMAINS
 
 SITE_URL = [
     'http://helpdesk.rufian.eu',
@@ -19,17 +19,17 @@ SITE_URL = [
 ]
 
 ADMINS = (
-    ('Rufian Admin', 'ntrrgc@gmail.com'),
+    ('Helpdesk admin', 'ntrrgc@gmail.com'),
 )
 
-STATIC_ROOT = '/srv/www/static.rufian.eu/'
+STATIC_ROOT = 'static/'
 
-STATIC_URL = '//static.rufian.eu/'
+STATIC_URL = '/static/'
 
 
 SNORKY_BACKEND_URL = 'http://localhost:5002/backend'
 
-SNORKY_FRONTEND_URL = 'ws://localhost:5001/websocket'
+SNORKY_FRONTEND_URL = 'wss://<HOST>/websocket'
 
 SECRET_FILE = os.path.join(os.path.dirname(__file__), 'secret.key')
 
