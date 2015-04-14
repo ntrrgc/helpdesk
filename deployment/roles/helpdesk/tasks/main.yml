@@ -1,0 +1,69 @@
+---
+- group: name=helpdesk
+- group: name=helpdesk-sock
+
+- user: name=helpdesk shell=/bin/bash home={{ helpdesk_root }}
+        groups=helpdesk-sock
+
+- name: Add nginx to socket group
+  user: name=nginx groups=helpdesk-sock append=yes
+  notify: restart nginx
+
+- copy: src=helpdesk.tmp dest=/etc/tmpfiles.d/helpdesk.conf
+  notify: update tmpfiles
+
+- name: install virtualenv
+  yum: pkg=python-virtualenv
+
+- file: path={{ helpdesk_root }}/ state=directory owner=helpdesk group=helpdesk recurse=yes
+- synchronize: src=../helpdesk_proj/ dest={{ helpdesk_root }}/
+    rsync_opts="--exclude=/db.sqlite3 --exclude=/env --exclude=/guniconf.py" delete=yes owner=no group=no
+  notify: 
+    - restart helpdesk-django
+    - restart helpdesk-snorky
+- file: path={{ helpdesk_root }}/ state=directory owner=helpdesk group=helpdesk recurse=yes
+
+- pip: virtualenv={{ helpdesk_root }}/env requirements={{ helpdesk_root }}/requirements.txt
+
+- synchronize: src={{ snorky_root }}/snorky dest={{ helpdesk_root }}/env/lib/python2.7/site-packages/ owner=no group=no
+  tags:
+    - snorky
+
+- name: Check if database exists
+  stat: path={{ helpdesk_root }}/db.sqlite3
+  register: db_exists
+- name: Create empty database
+  shell: "DJANGO_SETTINGS_MODULE=helpdesk_proj.settings.production ./env/bin/python manage.py syncdb --noinput"
+  sudo: yes
+  sudo_user: helpdesk
+  args:
+    chdir: "{{ helpdesk_root }}"
+  when: not db_exists.stat.exists
+- shell: "DJANGO_SETTINGS_MODULE=helpdesk_proj.settings.production ./env/bin/python manage.py collectstatic --noinput"
+  sudo: yes
+  sudo_user: helpdesk
+  args:
+    chdir: "{{ helpdesk_root }}"
+
+- template: src=guniconf.py dest={{ helpdesk_root }}
+- template: src=helpdesk-django.service dest=/etc/systemd/system/
+  notify: reload daemons
+- template: src=helpdesk-snorky.service dest=/etc/systemd/system/
+  notify: reload daemons
+
+- service: name=helpdesk-django state=started enabled=yes
+- service: name=helpdesk-snorky state=started enabled=yes
+
+- template: src=try.snorkyproject.org.conf dest=/etc/nginx/servers.d/
+  notify: reload nginx
+  tags: 
+    - hdnginx
+- file: dest=/etc/nginx/servers.d/try2.snorkyproject.org.conf src=try.snorkyproject.org.conf state=link
+- template: src=try2.snorkyproject.org.server dest=/etc/nginx/servers.d/
+  tags: 
+    - hdnginx
+  notify: reload nginx
+- template: src=try.snorkyproject.org.server dest=/etc/nginx/servers.d/
+  tags: 
+    - hdnginx
+  notify: reload nginx

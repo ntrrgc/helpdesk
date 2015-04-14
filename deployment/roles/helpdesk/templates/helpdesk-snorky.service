@@ -1,0 +1,10 @@
+[Unit]
+Description=Helpdesk Snorky
+
+[Service]
+User=helpdesk
+ExecStart={{ helpdesk_root }}/env/bin/python run_snorky_server.py
+WorkingDirectory={{ helpdesk_root }}
+
+[Install]
+WantedBy=multi-user.target

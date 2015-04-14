@@ -1,0 +1,3 @@
+---
+- include: ../../../keypair.yml site=try.snorkyproject.org
+- include: ../../../keypair.yml site=try2.snorkyproject.org

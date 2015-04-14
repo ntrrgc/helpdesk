@@ -1,0 +1,14 @@
+---
+- yum: pkg="{{ item }}"
+  with_items:
+    - python-flask
+    - python-gunicorn
+    - python-jinja2
+- copy: src=special.service dest=/etc/systemd/system/
+  notify: 
+    - reload daemons
+    - restart special
+- synchronize: src=special dest=/srv/www/ recursive=yes archive=no
+  notify: restart special
+- file: path=/srv/www/special owner=root group=root recurse=yes
+- service: name=special state=started enabled=yes

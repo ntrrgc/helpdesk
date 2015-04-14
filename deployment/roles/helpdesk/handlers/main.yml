@@ -1,0 +1,5 @@
+---
+- name: restart helpdesk-django
+  service: name=helpdesk-django state=restarted
+- name: restart helpdesk-snorky
+  service: name=helpdesk-snorky state=restarted

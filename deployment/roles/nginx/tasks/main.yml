@@ -1,0 +1,24 @@
+---
+- yum: pkg=nginx
+- file: path=/etc/nginx/servers.d state=directory
+- file: path=/etc/nginx/apps.d state=directory
+- template: src=nginx.conf dest=/etc/nginx/
+  notify: reload nginx
+- copy: src="{{ item }}" dest=/etc/nginx/
+  with_items:
+    - mime.types
+    - php.conf
+    - special.conf
+    - special.list_allow
+    - special.list_disallow
+  notify: reload nginx
+- copy: src=tmpfiles dest=/etc/tmpfiles.d/nginx.conf
+  notify: update tmpfiles
+- file: path=/srv/www state=directory
+- firewalld: service="{{ item }}" state=enabled permanent=yes
+  with_items:
+    - http
+    - https
+  notify: reload firewall
+  when: use_firewalld
+- service: name=nginx state=started enabled=yes

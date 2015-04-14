@@ -1,0 +1,3 @@
+---
+- yum: pkg=pcre-devel 
+- pip: name=uwsgi version=2.0.7

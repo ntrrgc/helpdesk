@@ -1,0 +1,39 @@
+---
+- name: Set hostname
+  copy: dest=/etc/hostname content='try.snorkyproject.org'
+  tags: hostname
+- name: Set hosts file
+  template: src=hosts dest=/etc/hosts
+- name: Configure OpenSSH server
+  template: src=sshd_config dest=/etc/ssh/
+  notify: restart ssh
+- name: Install a common set of packages
+  yum: pkg="{{ item }}"
+  with_items:
+    - epel-release
+    - wget
+    - ack
+    - gcc
+    - python-pip
+    - python-devel
+    - rsync
+    - net-tools # netstat
+    - tmux
+    - git
+    - sudo
+
+    # not so needed, but good to have just in case
+    - strace
+    - tcpdump
+    - nmap # ncat
+    - whois
+    - bind-utils # dig
+    - w3m
+    - policycoreutils-python # semanage (SELinux)
+    - man-pages
+    - mutt
+    #- setroubleshooting-server # friendlier SELinux notices, may require reboot
+- copy: src=my_bashrc.sh dest=/etc/profile.d/my_bashrc.sh
+- file: dest=/root/.ssh state=directory
+- copy: src=ssh_known_hosts dest=/etc/ssh/
+- copy: dest=/root/.ssh/authorized_keys content="{{ authorized_keys }}"

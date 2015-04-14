@@ -1,0 +1,12 @@
+---
+- name: set up server
+  user: root
+  hosts: helpdesk
+  vars_files:
+    - ssl_keys.vault
+  roles:
+    - { role: base, tags: ['base'] }
+    - { role: nginx, tags: ['nginx'] }
+    - { role: ssl, tags: ['ssl'] }
+    - { role: nginx-special, tags: ['special'] }
+    - { role: helpdesk, tags: ['helpdesk'] }

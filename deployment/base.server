@@ -1,0 +1,16 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ name }};
+    include servers.d/{{ name }}.conf;
+} server {
+    listen 443;
+    listen [::]:443;
+    server_name {{ name }};
+    include servers.d/{{ name }}.conf;
+    ssl on;
+    {% if custom_ssl %}
+    ssl_certificate /etc/pki/tls/certs/{{ name }}.chain.pem;
+    ssl_certificate_key /etc/pki/tls/private/{{ name }}.key;
+    {% endif %}
+}

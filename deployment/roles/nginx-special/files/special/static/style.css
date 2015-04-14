@@ -1,0 +1,91 @@
+@font-face {
+    font-family: 'Oxygen';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Oxygen Light'), local('Oxygen-Light'),
+         url('oxygen-light.woff') format('woff');
+}
+@font-face {
+    font-family: 'Oxygen';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Oxygen'), local('Oxygen-Regular'),
+         url('oxygen-regular.woff') format('woff');
+}
+
+body {
+    background: #FFB71D;
+    font-family: Oxygen;
+    color: white;
+    word-spacing: 0px;
+    font-weight: 400;
+}
+
+.main {
+    width: 438px;
+    border-radius: 10px;
+    padding: 30px;
+    margin: 0 auto;
+    margin-top: 70px;
+    color: white;
+    padding-left: 232px;
+}
+
+.footer {
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 60px;
+    border-top: 1px solid #6B310B;
+    width: 180px;
+    padding-top: 5px;
+    font-size: 80%;
+    color: #6B310B;
+}
+
+h1 {
+    font-weight: 400;
+}
+
+h2 {
+    font-weight: 300;
+}
+
+body.error500 {
+    background: #FDAF23;
+}
+
+.error403 .main {
+    background: url("godzilla_car.png") 20px 40px no-repeat, #F86A0D;
+}
+
+.error404 .main {
+    background: url("godzilla_plane.png") 20px 20px no-repeat, #F86A0D;
+}
+
+.error500 .main {
+    background: url("godzilla_fire.png") 20px 55px no-repeat, #E74512;
+    padding-left: 240px;
+}
+
+.error502 .main {
+    background: url("godzilla_car.png") 20px 57px no-repeat, #F86A0D;
+}
+
+.error503 {
+    background: #4DB8E2;
+}
+
+.error503 .main {
+    /* y: 40px without <p> */
+    background: url("godzilla_wrench.png") 24px 60px no-repeat,
+                rgb(41, 117, 187);
+}
+
+.error503 .footer {
+    color: #155468;
+    border-top-color: #155468;
+}
+
+a {
+    color: #ABD9DD;
+}

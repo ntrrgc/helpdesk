@@ -1,0 +1,10 @@
+[Unit]
+Description=Error handler and directory explorer for web servers
+
+[Service]
+User=nginx
+ExecStart=/usr/bin/gunicorn --access-logfile=- -c guniconf.py main:app
+WorkingDirectory=/srv/www/special
+
+[Install]
+WantedBy=multi-user.target

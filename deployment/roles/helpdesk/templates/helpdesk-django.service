@@ -1,0 +1,11 @@
+[Unit]
+Description=Helpdesk Django
+
+[Service]
+User=helpdesk
+ExecStart={{ helpdesk_root }}/env/bin/gunicorn -c ./guniconf.py helpdesk_proj.wsgi
+WorkingDirectory={{ helpdesk_root }}
+Environment="DJANGO_SETTINGS_MODULE=helpdesk_proj.settings.production"
+
+[Install]
+WantedBy=multi-user.target
