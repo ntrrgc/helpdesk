@@ -25,9 +25,10 @@
 
 - pip: virtualenv={{ helpdesk_root }}/env requirements={{ helpdesk_root }}/requirements.txt
 
-- synchronize: src={{ snorky_root }}/snorky dest={{ helpdesk_root }}/env/lib/python2.7/site-packages/ owner=no group=no
-  tags:
-    - snorky
+# - name: Use Snorky from my local system, instead of the stable version of the cheeseshop
+# - synchronize: src={{ snorky_root }}/snorky dest={{ helpdesk_root }}/env/lib/python2.7/site-packages/ owner=no group=no
+# tags:
+#  - snorky
 
 - name: Check if database exists
   stat: path={{ helpdesk_root }}/db.sqlite3
