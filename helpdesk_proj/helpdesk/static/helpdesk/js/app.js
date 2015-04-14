@@ -77,7 +77,7 @@ app.controller('MyIssuesCtrl', function($scope, Restangular) {
       .then(function(response) {
          $scope.issues = response.data;
          deltaProcessor.collections["Issue"] =
-             new ArrayCollection($scope.issues);
+             new Snorky.DataSync.ArrayCollection($scope.issues);
          var token = response.headers()['x-subscription-token'];
          datasync.acquireSubscription({token: token});
       });
