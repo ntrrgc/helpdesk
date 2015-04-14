@@ -40,6 +40,15 @@ app.run(function() {
       // Show desktop notifications (if the browser allows them)
       showNotificationMessage(delta);
    });
+
+   snorky.disconnected.add(function() {
+     // Maybe the server was restarted, or maybe it's fault of our network.
+     // In any case, wait and reload.
+     console.log("Connection to Snorky lost... reloading in 5 seconds.");
+     setTimeout(function() {
+       location.reload();
+     }, 5000);
+   });
 })
 
 /* Controller (MVC) */
