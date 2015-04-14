@@ -10,7 +10,7 @@ class IssuesViewSet(viewsets.ViewSet):
         return api.RetrieveIssueView.as_view()(request, pk=pk)
 
 
-class MyIssuesViewSet(viewsets.ModelViewSet):
+class MyIssuesViewSet(viewsets.ViewSet):
     def list(self, request):
         return api.MyIssuesView.as_view()(request)
 
