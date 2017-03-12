@@ -1,5 +1,7 @@
 ---
 - yum: pkg=nginx
+- user: nginx append=yes groups=ssl
+  notify: restart nginx
 - file: path=/etc/nginx/servers.d state=directory
 - file: path=/etc/nginx/apps.d state=directory
 - template: src=nginx.conf dest=/etc/nginx/
@@ -11,6 +13,7 @@
     - special.conf
     - special.list_allow
     - special.list_disallow
+    - letsencrypt.conf
   notify: reload nginx
 - copy: src=tmpfiles dest=/etc/tmpfiles.d/nginx.conf
   notify: update tmpfiles
