@@ -6,7 +6,5 @@
     - ssl_keys.vault
   roles:
     - { role: base, tags: ['base'] }
-    - { role: nginx, tags: ['nginx'] }
-    - { role: ssl, tags: ['ssl'] }
-    - { role: nginx-special, tags: ['special'] }
+    - { role: caddy, tags: ['caddy'] }
     - { role: helpdesk, tags: ['helpdesk'] }

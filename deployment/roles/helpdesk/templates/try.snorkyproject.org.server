@@ -1,3 +1,0 @@
-{% extends "base.server" %}
-{% set name = "try.snorkyproject.org" %}
-{% set custom_ssl = true %}

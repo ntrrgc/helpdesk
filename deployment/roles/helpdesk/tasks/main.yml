@@ -5,9 +5,9 @@
 - user: name=helpdesk shell=/bin/bash home={{ helpdesk_root }}
         groups=helpdesk-sock
 
-- name: Add nginx to socket group
-  user: name=nginx groups=helpdesk-sock append=yes
-  notify: restart nginx
+- name: Add caddy to socket group
+  user: name=caddy groups=helpdesk-sock append=yes
+  notify: restart caddy
 
 - copy: src=helpdesk.tmp dest=/etc/tmpfiles.d/helpdesk.conf
   notify: update tmpfiles
@@ -55,16 +55,7 @@
 - service: name=helpdesk-django state=started enabled=yes
 - service: name=helpdesk-snorky state=started enabled=yes
 
-- template: src=try.snorkyproject.org.conf dest=/etc/nginx/servers.d/
-  notify: reload nginx
+- template: src=try.snorkyproject.org.conf dest=/etc/caddy/services.d/
+  notify: reload caddy
   tags: 
-    - hdnginx
-- file: dest=/etc/nginx/servers.d/try2.snorkyproject.org.conf src=try.snorkyproject.org.conf state=link
-- template: src=try2.snorkyproject.org.server dest=/etc/nginx/servers.d/
-  tags: 
-    - hdnginx
-  notify: reload nginx
-- template: src=try.snorkyproject.org.server dest=/etc/nginx/servers.d/
-  tags: 
-    - hdnginx
-  notify: reload nginx
+    - caddyconf
