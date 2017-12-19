@@ -1,9 +1,13 @@
 ---
-# Users in the ssl group can read certificates and private keys.
-- group: name=ssl
-- user: name=ssl group=ssl
+  # Users in the ssl group can read certificates and private keys.
+- user: ssl
+- group: ssl
+
 - yum: pkg=certbot
-- file: path=/var/log/letsencrypt state=directory owner=ssl group=ssl mode=0750
-- file: path=/etc/letsencrypt/archive state=directory owner=ssl group=ssl mode=0750
-- file: path=/etc/letsencrypt/live state=directory owner=ssl group=ssl mode=0750
-- file: path=/var/acme state=directory owner=ssl group=ssl mode=0750
+- file: path=/var/log/letsencrypt state=directory user=ssl group=ssl mode=0750
+- file: path=/etc/letsencrypt/archive state=directory user=ssl group=ssl mode=0750
+- file: path=/etc/letsencrypt/live state=directory user=ssl group=ssl mode=0750
+- file: path=/var/acme state=directory user=ssl group=ssl mode=0750
+
+- copy: src=letsencrypt.conf dest=/etc/nginx/
+  notify: reload nginx
