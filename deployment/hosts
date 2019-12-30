@@ -1,2 +1,2 @@
 [helpdesk]
-151.80.158.46 ansible_ssh_user=root
+151.80.158.46 ansible_ssh_user=root custom_ssl=yes
