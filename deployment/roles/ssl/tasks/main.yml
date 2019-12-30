@@ -1,5 +1,5 @@
 ---
-  # Users in the ssl group can read certificates and private keys.
+# Users in the ssl group can read certificates and private keys.
 - user: ssl
 - group: ssl
 
