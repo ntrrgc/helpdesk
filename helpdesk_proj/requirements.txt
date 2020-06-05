@@ -1,5 +1,5 @@
 backports.ssl-match-hostname==3.4.0.2
-Django==1.6.2
+Django==1.11.29
 django-browserid==0.9
 djangorestframework==2.3.12
 fancy-tag==0.2.0
