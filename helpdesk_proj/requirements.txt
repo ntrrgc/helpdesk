@@ -1,7 +1,7 @@
 backports.ssl-match-hostname==3.4.0.2
 Django==1.6.2
 django-browserid==0.9
-djangorestframework==2.3.12
+djangorestframework==3.11.2
 fancy-tag==0.2.0
 funcsigs==0.4
 gunicorn==18.0
